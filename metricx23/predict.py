@@ -24,6 +24,12 @@ import torch
 import transformers
 
 
+
+
+
+
+
+
 @dataclasses.dataclass
 class Arguments:
   """Prediction command-line arguments."""
@@ -114,6 +120,7 @@ def get_dataset(
   ds = ds.map(_make_input)
   ds = ds.map(_tokenize)
   ds = ds.map(_remove_eos)
+  print(ds)
   ds.set_format(
       type="torch",
       columns=["input_ids", "attention_mask"],
@@ -163,14 +170,25 @@ def main() -> None:
   if dirname:
     os.makedirs(dirname, exist_ok=True)
 
-  with open(args.output_file, "w") as out:
+  with open(args.output_file, "w", encoding='utf-8') as out:
     for pred, example in zip(predictions, ds["test"]):
       example["prediction"] = float(pred)
       del example["input"]
       del example["input_ids"]
       del example["attention_mask"]
-      out.write(json.dumps(example) + "\n")
-
+      out.write(json.dumps(example , ensure_ascii = False) + "\n")
 
 if __name__ == "__main__":
   main()
+
+
+'''
+python  metricx/metricx23/predict.py --tokenizer google/mt5-xl --model_name_or_path google/metricx-23-xl-v2p0 --max_input_length 1024 --batch_size 1 --input_file metricx/data/test_data.jsonl --output_file metricx/data/test_op.jsonl
+python -m metricx23.predict \
+  --tokenizer google/mt5-xl \
+  --model_name_or_path google/metricx-23-xl-v2p0 \
+  --max_input_length 1024 \
+  --batch_size 16 \[]
+  --input_file data/train_data.jsonl \
+  --output_file data/train_op.jsonl
+'''

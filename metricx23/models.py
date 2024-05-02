@@ -67,6 +67,7 @@ class MT5ForRegression(MT5PreTrainedModel):
 
     # Initialize weights and apply final processing
     self.post_init()
+    print(" line  70 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
     # Model parallel
     self.model_parallel = False
@@ -97,6 +98,8 @@ class MT5ForRegression(MT5PreTrainedModel):
 
     # FutureWarning: head_mask was separated into two input args - head_mask,
     # decoder_head_mask
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+
     if head_mask is not None and decoder_head_mask is None:
       if self.config.num_layers == self.config.num_decoder_layers:
         warnings.warn(__HEAD_MASK_WARNING_MSG, FutureWarning)
@@ -114,6 +117,8 @@ class MT5ForRegression(MT5PreTrainedModel):
           output_hidden_states=output_hidden_states,
           return_dict=return_dict,
       )
+      print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+
     elif return_dict and not isinstance(encoder_outputs, BaseModelOutput):
       encoder_outputs = BaseModelOutput(
           last_hidden_state=encoder_outputs[0],
@@ -131,6 +136,7 @@ class MT5ForRegression(MT5PreTrainedModel):
     # Create 1 step of dummy input for the decoder.
     batch_size = input_ids.size(0)
     decoder_input_ids = torch.LongTensor([0]).repeat(batch_size).reshape(-1, 1)
+    print("########################", decoder_input_ids)
     if torch.cuda.is_available():
       decoder_input_ids = decoder_input_ids.to(torch.device("cuda"))
 
@@ -191,6 +197,7 @@ class MT5ForRegression(MT5PreTrainedModel):
       # move labels to correct device to enable PP
       labels = labels.to(predictions.device)
       loss = loss_fct(predictions.view(-1), labels.view(-1))
+    print("Loss and pred", loss, predictions)  
 
     return MT5ForRegressionOutput(
         loss=loss,
