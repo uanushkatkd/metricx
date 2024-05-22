@@ -29,6 +29,7 @@ from metricx23 import models
 from metricx23 import prepare_dataset
 import torch
 import transformers
+import wandb
 
 from peft import LoraConfig, get_peft_model
 
@@ -121,7 +122,8 @@ def create_accelerator(gradient_accumulation_steps=1, log_with="wandb"):
     
 def main() -> None:
 
-    # Training arguments   
+    # Training arguments  
+    wandb.init(project="metricx-finetuning") 
     parser = transformers.HfArgumentParser(Arguments)
     (args,) = parser.parse_args_into_dataclasses()
     #print("done line 155")
@@ -198,13 +200,14 @@ def main() -> None:
 
     training_args = transformers.TrainingArguments(
         output_dir=dirname,
-        num_train_epochs=2,
-        learning_rate=1e-6,
+        num_train_epochs=10,
+        learning_rate=1e-4,
         per_device_eval_batch_size=per_device_batch_size,
         per_device_train_batch_size=per_device_batch_size,
         evaluation_strategy="epoch",
         logging_steps=logging_step,
         weight_decay=0.01,
+        report_to="wandb",
         
     )
     # Initialize optimizer and scheduler
@@ -229,6 +232,7 @@ def main() -> None:
     #print("##################", ds['train'])
     #model.config.use_cache=False
     trainer.train()
+    wandb.finish()
     
 if __name__ == "__main__":
     main()
