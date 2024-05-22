@@ -35,13 +35,13 @@ from peft import LoraConfig, get_peft_model
 from scipy.stats import kendalltau, pearsonr, spearmanr
 from peft import prepare_model_for_kbit_training
 
-#device_map='auto'
+device_map='auto'
 
 
-device_map = {
-        0: [0, 1, 2,3, 4, 5, 6, 7, 8, 9],
-        1: [10, 11, 12, 13, 14, 15, 16,17, 18, 19, 20, 21, 22, 23]
-    }
+# device_map = {
+#         0: [0, 1, 2,3, 4, 5, 6, 7, 8, 9],
+#         1: [10, 11, 12, 13, 14, 15, 16,17, 18, 19, 20, 21, 22, 23]
+#     }
 #device_map = {'': (0, 1)}
 #device_map={"": 0,"":1}
 
@@ -143,7 +143,7 @@ def main() -> None:
     )
     tokenizer = transformers.AutoTokenizer.from_pretrained(args.tokenizer , use_fast= False)
     #print("done line 165")
-    model = models.MT5ForRegression.from_pretrained(args.model_name_or_path,quantization_config=bnb_config,device_map=device_map)
+    model = models.MT5ForRegression.from_pretrained(args.model_name_or_path,quantization_config=bnb_config)
     #model.to(device)
     #print(model)
 
@@ -156,7 +156,7 @@ def main() -> None:
             bias="none",
         )
     model = get_peft_model(model, config)
-    model.parallelize(device_map)
+    #model.parallelize(device_map)
 
     #print("Lora model###############",model)
     model.print_trainable_parameters()
@@ -240,7 +240,7 @@ export HF_CACHE='/data-3/anushka/.cache'
 export HF_HOME='/data-3/anushka/.cache'
 export TRANSFORMERS_CACHE='/data-3/anushka/.cache'
 
-CUDA_VISIBLE_DEVICES=0,1 python -m metricx23.fine_tune \
+CUDA_VISIBLE_DEVICES=0 python -m metricx23.fine_tune \
   --tokenizer google/mt5-xl \
   --model_name_or_path google/metricx-23-xl-v2p0 \
   --max_input_length 1024 \
