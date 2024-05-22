@@ -1,0 +1,28 @@
+1. use python 3.9
+2. protobuf 3.20.3
+3. upgrade datasets library
+
+
+
+training_args = transformers.TrainingArguments(
+      output_dir=os.path.dirname(args.output_file),
+      num_train_epochs=1,
+      learning_rate=2e-5,
+      per_device_eval_batch_size=per_device_batch_size,
+      per_device_train_batch_size=per_device_batch_size,
+      evaluation_strategy="epoch",
+      logging_steps=logging_step,
+      fp16=True,
+      weight_decay=0.01,
+  )
+  
+  trainer = transformers.Trainer(
+      model=model,
+      args=training_args,
+      compute_metrics=compute_metrics,
+      train_dataset=ds["train"],
+      tokenizer=tokenizer
+  )
+  print("##################", ds['train'])
+
+  trainer.train()

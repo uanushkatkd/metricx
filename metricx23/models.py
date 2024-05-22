@@ -38,8 +38,9 @@ __HEAD_MASK_WARNING_MSG = (
 
 @dataclasses.dataclass
 class MT5ForRegressionOutput(ModelOutput):
-  loss: Optional[torch.FloatTensor] = None
   predictions: torch.FloatTensor = None
+  labels:torch.FloatTensor = None
+  loss:torch.FloatTensor = None
 
 
 class MT5ForRegression(MT5PreTrainedModel):
@@ -66,8 +67,13 @@ class MT5ForRegression(MT5PreTrainedModel):
     self.lm_head = nn.Linear(config.d_model, config.vocab_size, bias=False)
 
     # Initialize weights and apply final processing
+    
     self.post_init()
-    print(" line  70 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    for param in self.parameters():
+      param.requires_grad = True
+      
+
+    #print(" line  70 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
     # Model parallel
     self.model_parallel = False
@@ -98,7 +104,7 @@ class MT5ForRegression(MT5PreTrainedModel):
 
     # FutureWarning: head_mask was separated into two input args - head_mask,
     # decoder_head_mask
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
     if head_mask is not None and decoder_head_mask is None:
       if self.config.num_layers == self.config.num_decoder_layers:
@@ -117,7 +123,7 @@ class MT5ForRegression(MT5PreTrainedModel):
           output_hidden_states=output_hidden_states,
           return_dict=return_dict,
       )
-      print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+      #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
     elif return_dict and not isinstance(encoder_outputs, BaseModelOutput):
       encoder_outputs = BaseModelOutput(
@@ -136,7 +142,7 @@ class MT5ForRegression(MT5PreTrainedModel):
     # Create 1 step of dummy input for the decoder.
     batch_size = input_ids.size(0)
     decoder_input_ids = torch.LongTensor([0]).repeat(batch_size).reshape(-1, 1)
-    print("########################", decoder_input_ids)
+    #print("########################", decoder_input_ids)
     if torch.cuda.is_available():
       decoder_input_ids = decoder_input_ids.to(torch.device("cuda"))
 
@@ -190,16 +196,30 @@ class MT5ForRegression(MT5PreTrainedModel):
 
     # Clip to 0 to 25
     predictions = torch.clamp(predictions, 0, 25)
+    #print("############PREDICTIONS:",predictions)
 
     loss = None
     if labels is not None:
       loss_fct = nn.MSELoss()
       # move labels to correct device to enable PP
       labels = labels.to(predictions.device)
+      labels = labels.to(predictions.dtype)
       loss = loss_fct(predictions.view(-1), labels.view(-1))
-    print("Loss and pred", loss, predictions)  
-
+    
     return MT5ForRegressionOutput(
-        loss=loss,
         predictions=predictions,
+        labels = labels,
+        loss=loss
     )
+
+
+  #loss.requires_grad = True
+      #predictions.requires_grad =True
+      #labels.requires_grad =True
+    # print("Loss and pred", MT5ForRegressionOutput(
+    #      predictions=predictions,
+    #      labels=labels,
+    #      loss=loss
+         
+    #  ))  
+         #print("########################LABELS", labels)

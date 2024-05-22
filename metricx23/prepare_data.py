@@ -11,14 +11,14 @@ def process_json(input_file, output_file,flag):
                     entry = {
                         "source": data["src"],
                         "hypothesis": data["translation"],
-                        "mqm":float(data["mqm_norm_score"]),
+                        "mqm":25-float(data["mqm_norm_score"])*25,
                         "da": float(data["da_norm_score"])
                     }
                 else:
                     entry = {
                         "reference": data["ref"],
                         "hypothesis": data["translation"],
-                        "mqm": float(data["mqm_norm_score"]),
+                        "mqm": 25-float(data["mqm_norm_score"])*25,
                         "da": float(data["da_norm_score"])
                     }
                         
