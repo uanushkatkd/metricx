@@ -51,9 +51,7 @@ def load_checkpoint(ckpt, model_name,output_dir):
         )
     base_model =  models.MT5ForRegression.from_pretrained(
             model_name ,
-            torch_dtype=torch.bfloat16,
-            load_in_4bit=True,
-            quantization_config=quantization_config
+            torch_dtype=torch.bfloat16
         )
     base_model = dequantize_model(base_model)
     print("Loading the lora model...")
