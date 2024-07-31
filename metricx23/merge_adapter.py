@@ -63,7 +63,7 @@ def load_checkpoint(ckpt, model_name,output_dir):
     #print("Converting to bfloat16...")
     #merged_model = merged_model.to(dtype=torch.bfloat16)   
     print(f"Saving to {output_dir}...")
-    merged_model.save_pretrained(output_dir) 
+    merged_model.save_pretrained(output_dir, safe_serialization=False) 
     tokenizer.save_pretrained(output_dir)
 
 def main():
