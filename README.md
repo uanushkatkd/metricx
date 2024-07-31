@@ -2,7 +2,7 @@
 ## To Fine-tune Metricx-23 using LoRA: 
 - Run `fine_tune.sh`, it'll take datasets path,ckpt save path, batch size, and grad accumulation steps. Other hyperparameters are set to default. 
 - To change other hyperparameters, go through `fine_tune_from_scratch.py`
-- Once final ckpt is saved then run `merge_adapter.py`. It takes `base_model`, `checkpoint`, and 'output_dir' as arguments.
+- Once final ckpt is saved then run `merge_adapter.py`. It takes `base_model`, `checkpoint`, and `output_dir` as arguments.
 ## To run inference :
 - Run `score.sh`, it'll take datasets path,ckpt save path, batch size, and output_file as arguments.`output_file` is where the scores predicted will be saved.
  
