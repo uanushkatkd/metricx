@@ -351,7 +351,7 @@ def main() -> None:
     model = args.model
     train_file =args.train_file
     val_file =args.val_file
-    output_file_path= args.output_file_path
+    output_file_path= args.output_file
     tokenizer= args.tokenizer
     max_input_length=args.max_input_length
     epochs= args.epochs
