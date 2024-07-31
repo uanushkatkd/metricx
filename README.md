@@ -4,7 +4,8 @@
 - To change other hyperparameters, go through `fine_tune_from_scratch.py`
 - Once final ckpt is saved then run `merge_adapter.py`. It takes `base_model`, `checkpoint`, and `output_dir` as arguments.
 ## To run inference :
-- Run `score.sh`, it'll take datasets path,ckpt save path, batch size, and output_file as arguments.`output_file` is where the scores predicted will be saved.
+- Run `score.sh`, it'll take datasets path,ckpt save path, batch size, and output_file as arguments.`output_file` is where the scores predicted will be saved, which can be used further to calculate correlations.
+- `score.py` will calucate correlations, but code is not clean.
  
 
 
